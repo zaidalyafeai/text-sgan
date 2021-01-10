@@ -75,12 +75,12 @@ class SGAN:
             imgs.append(PIL.Image.fromarray(row_images[0], 'RGB'))
         return imgs       
 
-    def generate_images(self, seeds, truncation_psi = 0.5, class_idx = None):
+    def generate_images(self, zs, truncation_psi, class_idx = None):
         Gs_kwargs = dnnlib.EasyDict()
         Gs_kwargs.output_transform = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
         Gs_kwargs.randomize_noise = False
         if not isinstance(truncation_psi, list):
-            truncation_psi = [truncation_psi] * len(seeds)
+            truncation_psi = [truncation_psi] * len(zs)
             
         imgs = []
         label = np.zeros([1] + self.Gs.input_shapes[1][1:])
@@ -88,10 +88,8 @@ class SGAN:
             label[:, class_idx] = 1
         else:
             label = None
-        for idx, seed in log_progress(enumerate(seeds), size = len(seeds), name = "Generating images"):
-            rnd = np.random.RandomState(seed)
-            z = rnd.randn(1, *self.Gs.input_shape[1:])
-            Gs_kwargs.truncation_psi = truncation_psi[idx]
+        for z_idx, z in log_progress(enumerate(zs), size = len(zs), name = "Generating images"):
+            Gs_kwargs.truncation_psi = truncation_psi[z_idx]
             noise_rnd = np.random.RandomState(1) # fix noise
             tflib.set_vars({var: noise_rnd.randn(*var.shape.as_list()) for var in self.noise_vars}) # [height, width]
             images = self.Gs.run(z, label, **Gs_kwargs) # [minibatch, height, width, channel]
@@ -137,7 +135,7 @@ class SGAN:
 
     def generate_randomly(self, truncation_psi = 0.5, class_idx = None):
         return self.generate_images_from_seeds(np.random.randint(4294967295, size=1), 
-                truncation_psi=truncation_psi, class_idx = class_idx)
+        truncation_psi=truncation_psi, class_idx = class_idx)
 
     def generate_grid(self, truncation_psi = 0.7): 
       seeds = np.random.randint((2**32 - 1), size=9)
