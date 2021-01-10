@@ -76,7 +76,7 @@ def resize(path, dim = (512, 512)):
   os.makedirs(out_path, exist_ok=True)
   for item in log_progress(dirs):
     img_path = f'{path}/{item}'
-    if os.path.isfile(img_path):
+    if os.path.isfile(img_path) and img_path.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')):
         im = Image.open(img_path)
         imResize = im.resize(dim, Image.ANTIALIAS).convert('RGB')
         imResize.save(f'{out_path}/{item}', 'JPEG', quality=90)
