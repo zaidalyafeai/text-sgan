@@ -354,7 +354,7 @@ def G_mapping(
     latents_in,                             # First input: Latent vectors (Z) [minibatch, latent_size].
     labels_in,                              # Second input: Conditioning labels [minibatch, label_size].
     latent_size             = 512,          # Latent vector (Z) dimensionality.
-    label_size              = 768,            # [EDITED]Label dimensionality, 0 if no labels.
+    label_size              = 0,            # [EDITED]Label dimensionality, 0 if no labels.
     dlatent_size            = 512,          # Disentangled latent (W) dimensionality.
     dlatent_broadcast       = None,         # Output disentangled latent (W) as [minibatch, dlatent_size] or [minibatch, dlatent_broadcast, dlatent_size].
     mapping_layers          = 8,            # Number of mapping layers.
@@ -768,7 +768,7 @@ def D_stylegan2(
     min_w               = 4,            # min width block
     res_log2            = 8,            # output size [min_h * 2^res_log2, min_w * 2^res_log2]
     use_attention       = False,
-    label_size          = 768,            # Dimensionality of the labels, 0 if no labels. Overridden based on dataset.
+    label_size          = 0,            # Dimensionality of the labels, 0 if no labels. Overridden based on dataset.
     fmap_base           = 16 << 10,     # Overall multiplier for the number of feature maps.
     fmap_decay          = 1.0,          # log2 feature map reduction when doubling the resolution.
     fmap_min            = 1,            # Minimum number of feature maps in any layer.
