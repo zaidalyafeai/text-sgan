@@ -26,6 +26,7 @@ import datetime
 from tqdm import tqdm
 from utils import log_progress
 from training import dataset
+from sentence_transformers import SentenceTransformer
 
 #----------------------------------------------------------------------------
 
@@ -816,8 +817,34 @@ def create_from_image_folders(tfrecord_dir, image_dir, shuffle, ignore_labels):
 
         if not ignore_labels:
             tfr.add_labels(onehot[order])
-            
+
+def create_image_and_text(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels):
+    images = []
+    texts = []
+    print('Loading images from "%s"' % image_dir)
+    
+    for img_path in glob.glob(f'{image_dir}/**.jpg'):
+        cpt_file = img_path.split('/')[-1][:-4]
+        cpt_text = open(f'{text_dir}/{cpt_file}.txt', 'r').read().splitlines()[0]
+
+        images.append(img_path)
+        texts.append(cpt_text)        
+
+    print('Create embeddings')
+    model = SentenceTransformer('paraphrase-distilroberta-base-v1')
+    embeddings = model.encode(texts)
+
+    with TFRecordExporter(tfrecord_dir, len(images)) as tfr:
+        for idx in range(len(images)):
+            img = np.asarray(PIL.Image.open(images[idx]))
+            img = img.transpose([2, 0, 1]) # HWC => CHW
+            tfr.add_image(img)
+
+        if not ignore_labels:
+            tfr.add_labels(embeddings)
+
 #----------------------------------------------------------------------------
+
 
 def create_from_image_folders_raw(tfrecord_dir, image_dir, shuffle, ignore_labels, resolution_log2=7):
     images = []
