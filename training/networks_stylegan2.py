@@ -537,14 +537,14 @@ def G_synthesis_stylegan2(
     fused_modconv       = True,         # Implement modulated_conv2d_layer() as a single fused op?
     **_kwargs):                         # Ignore unrecognized keyword args.
 
-    res_log2 = int(np.log2(resolution))
-    assert resolution == 2**res_log2 and resolution >= 4
+    res_log2 = int(np.log2(resolution)) - 2
+    # assert resolution == 2**resolution_log2 and resolution >= 4
     assert min_h > 2 and min_w >2 and res_log2>=1
     def nf(stage): return np.clip(int(fmap_base / (2.0 ** (stage * fmap_decay))), fmap_min, fmap_max)
     assert architecture in ['orig', 'skip', 'resnet']
     act = nonlinearity
-    num_layers = res_log2 * 2 - 2
-    # num_layers = res_log2 * 2 + 2
+    #num_layers = resolution_log2 * 2 - 2
+    num_layers = res_log2 * 2 + 2
     images_out = None
 
     # Primary inputs.
@@ -557,7 +557,7 @@ def G_synthesis_stylegan2(
         #res = (layer_idx + 5) // 2
         #shape = [1, 1, 2**res, 2**res]
         res = (layer_idx + 5) // 2 - 2
-        shape = [1, 1, 2**res, 2**res]
+        shape = [1, 1, min_h*2**res, min_w*2**res]
         noise_inputs.append(tf.get_variable('noise%d' % layer_idx, shape=shape, initializer=tf.initializers.random_normal(), trainable=False))
 
     # Single convolution layer with all the bells and whistles.
@@ -642,8 +642,8 @@ def G_synthesis_stylegan2(
         if architecture == 'skip':
             y = torgb(x, y, 0)
     # Main layers.
-    for res in range(3, res_log2 + 1):
-        with tf.variable_scope('%dx%d' % (2**res, 2**res)):
+    for res in range(1, res_log2 + 1):
+        with tf.variable_scope('%dx%d' % (min_h*2**res, min_w*2**res)):
             x = block(x, res)
             if architecture == 'skip':
                 y = upsample(y)
@@ -780,16 +780,17 @@ def D_stylegan2(
     dtype               = 'float32',    # Data type to use for activations and outputs.
     resample_kernel     = [1,3,3,1],    # Low-pass filter to apply when resampling activations. None = no filtering.
     **_kwargs):                         # Ignore unrecognized keyword args.
-    
-    res_log2 = int(np.log2(resolution))
-    assert resolution == 2**res_log2 and resolution >= 4
+    saved_args = locals()
+    print("saved_args is", saved_args)
+    res_log2 = int(np.log2(resolution)) - 2
+    #assert resolution == 2**resolution_log2 and resolution >= 4
     assert min_h > 2 and min_w >2 and res_log2>=1
     def nf(stage): return np.clip(int(fmap_base / (2.0 ** (stage * fmap_decay))), fmap_min, fmap_max)
     assert architecture in ['orig', 'skip', 'resnet']
     act = nonlinearity
 
     #images_in.set_shape([None, num_channels, resolution, resolution])
-    images_in.set_shape([None, num_channels, 2**res_log2, 2**res_log2])
+    images_in.set_shape([None, num_channels, min_h*2**res_log2, min_w*2**res_log2])
     labels_in.set_shape([None, label_size])
     images_in = tf.cast(images_in, dtype)
     labels_in = tf.cast(labels_in, dtype)
@@ -846,7 +847,7 @@ def D_stylegan2(
                 y = downsample(y)
     """
     for res in range(res_log2, 0, -1):
-        with tf.variable_scope('%dx%d' % (2**res, 2**res)):
+        with tf.variable_scope('%dx%d' % (min_h*2**res, min_w*2**res)):
             if architecture == 'skip' or res == res_log2:
                 x = fromrgb(x, y, res)
             x = block(x, res)
