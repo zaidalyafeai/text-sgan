@@ -557,7 +557,7 @@ def G_synthesis_stylegan2(
         #res = (layer_idx + 5) // 2
         #shape = [1, 1, 2**res, 2**res]
         res = (layer_idx + 5) // 2 - 2
-        shape = [1, 1, min_h*2**res, min_w*2**res]
+        shape = [1, 1, *2**res, *2**res]
         noise_inputs.append(tf.get_variable('noise%d' % layer_idx, shape=shape, initializer=tf.initializers.random_normal(), trainable=False))
 
     # Single convolution layer with all the bells and whistles.
@@ -642,7 +642,7 @@ def G_synthesis_stylegan2(
         if architecture == 'skip':
             y = torgb(x, y, 0)
     # Main layers.
-    for res in range(1, res_log2 + 1):
+    for res in range(3, res_log2 + 1):
         with tf.variable_scope('%dx%d' % (2**res, 2**res)):
             x = block(x, res)
             if architecture == 'skip':
