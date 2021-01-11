@@ -137,8 +137,11 @@ def training_loop(
     D.print_layers()
 
     print('Exporting sample images...')
+    start_time = time.time()
     grid_size, grid_reals, grid_labels = setup_snapshot_image_grid(training_set)
     save_image_grid(grid_reals, os.path.join(run_dir, 'reals.png'), drange=[0,255], grid_size=grid_size)
+    end_time = time.time()
+    print('Finish exporting in ', end_time - start_time)
     grid_latents = np.random.randn(np.prod(grid_size), *G.input_shape[1:])
     grid_fakes = Gs.run(grid_latents, grid_labels, is_validation=True, minibatch_size=minibatch_gpu)
     save_image_grid(grid_fakes, os.path.join(run_dir, 'fakes_init.png'), drange=[-1,1], grid_size=grid_size)
