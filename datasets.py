@@ -1,5 +1,5 @@
 from utils import resize, resize_dirs
-from dataset_tool import create_from_images, create_from_image_folders,create_image_and_text
+from dataset_tool import create_from_images, create_from_image_folders,create_image_and_textv2
 
 class Dataset:
     def __init__(self, path, dim = (512, 512)):
@@ -13,7 +13,7 @@ class Dataset:
             create_from_image_folders(tfrecord_dir, out_path, shuffle, ignore_labels)
         elif with_text:
             out_path = resize(self.path, dim = self.dim)
-            create_image_and_text(tfrecord_dir, out_path, self.path, shuffle, ignore_labels)
+            create_image_and_textv2(tfrecord_dir, out_path, self.path, shuffle, ignore_labels)
         else:
             print('resizing images ...')
             out_path = resize(self.path, dim = self.dim)

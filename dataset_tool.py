@@ -721,6 +721,47 @@ def create_from_images(tfrecord_dir, image_dir, shuffle):
 
 #----------------------------------------------------------------------------
 
+def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels):
+
+    images = []
+    texts = []
+    print('Loading images from "%s"' % image_dir)
+    
+    for img_path in glob.glob(f'{image_dir}/**.jpg'): 
+        cpt_file = img_path.split('/')[-1][:-4]
+        cpt_text = open(f'{text_dir}/{cpt_file}.txt', 'r').read().splitlines()[0]
+
+        images.append(img_path)
+        texts.append(cpt_text) 
+
+    print('Create embeddings')
+    model = SentenceTransformer('paraphrase-distilroberta-base-v1')
+    embeddings = model.encode(texts)
+
+    img = np.asarray(PIL.Image.open(images[0]))
+    shape = img.shape
+    resolution = img.shape[0]
+    channels = img.shape[2] if img.ndim == 3 else 1
+    if img.shape[1] != resolution:
+        error('Input images must have the same width and height')
+    if resolution != 2 ** int(np.floor(np.log2(resolution))):
+        error('Input image resolution must be a power-of-two')
+    if channels not in [1, 3]:
+        error('Input images must be stored as RGB or grayscale')
+
+    with TFRecordExporter(tfrecord_dir, len(images)) as tfr:
+        order = tfr.choose_shuffled_order() if shuffle else np.arange(len(images))
+        for idx in log_progress(range(order.size)):
+            img = np.asarray(PIL.Image.open(images[order[idx]]))
+            if channels == 1:
+                print("Greyscale, adding dimension:", images[order[idx]], img.shape)
+                img = img[np.newaxis, :, :] # HW => CHW
+            else:
+                img = img.transpose([2, 0, 1]) # HWC => CHW
+            tfr.add_image(img)
+            
+        if not ignore_labels:
+            tfr.add_labels(embeddings)
 def _get_all_files(path):
     if os.path.isfile(path):
         return [path]
