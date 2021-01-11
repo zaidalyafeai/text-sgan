@@ -29,7 +29,7 @@ def setup_snapshot_image_grid(training_set):
     gh = np.clip(4320 // training_set.shape[1], 4, 32)
 
     # Unconditional.
-    if training_set.label_size == 0:
+    if training_set.label_size > 10:
         reals, labels = training_set.get_minibatch_np(gw * gh)
         return (gw, gh), reals, labels
 
