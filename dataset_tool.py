@@ -834,10 +834,24 @@ def create_image_and_text(tfrecord_dir, image_dir, text_dir, shuffle, ignore_lab
     model = SentenceTransformer('paraphrase-distilroberta-base-v1')
     embeddings = model.encode(texts)
 
+    img = np.asarray(PIL.Image.open(images[0]))
+    resolution = img.shape[0]
+    channels = img.shape[2] if img.ndim == 3 else 1
+    if img.shape[1] != resolution:
+        error('Input images must have the same width and height')
+    if resolution != 2 ** int(np.floor(np.log2(resolution))):
+        error('Input image resolution must be a power-of-two')
+    if channels not in [1, 3]:
+        error('Input images must be stored as RGB or grayscale')
+
     with TFRecordExporter(tfrecord_dir, len(images)) as tfr:
         for idx in range(len(images)):
             img = np.asarray(PIL.Image.open(images[idx]))
-            img = img.transpose([2, 0, 1]) # HWC => CHW
+            if channels == 1:
+                print("Greyscale, adding dimension:", images[idx], images.shape)
+                img = img[np.newaxis, :, :] # HW => CHW
+            else:
+                img = img.transpose([2, 0, 1]) # HWC => CHW
             tfr.add_image(img)
 
         if not ignore_labels:
