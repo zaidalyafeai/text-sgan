@@ -151,12 +151,16 @@ class SGAN:
         return zs
 
     # Generates a list of images, based on a list of seed for latent vectors (Z), and a list (or a single constant) of truncation_psi's.
-    def generate_images_from_seeds(self, seeds, truncation_psi, class_idx = None):
-        return imshow(self.generate_images(self.generate_zs_from_seeds(seeds), truncation_psi, class_idx = class_idx)[0])
+    def generate_images_from_seeds(self, seeds, truncation_psi, text = None):
+        return imshow(self.generate_images_from_text(self.generate_zs_from_seeds(seeds), truncation_psi, text = text)[0])
 
     def generate_randomly(self, truncation_psi = 0.5, class_idx = None):
         return self.generate_images_from_seeds(np.random.randint(4294967295, size=1), 
         truncation_psi=truncation_psi, class_idx = class_idx)
+    
+    def generate_randomly(self, truncation_psi = 0.5, text = None):
+        return self.generate_images_from_seeds(np.random.randint(4294967295, size=1), 
+        truncation_psi=truncation_psi, text = text)
 
     def generate_grid(self, truncation_psi = 0.7): 
       seeds = np.random.randint((2**32 - 1), size=9)
