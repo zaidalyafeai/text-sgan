@@ -27,7 +27,7 @@ from tqdm import tqdm
 from utils import log_progress
 from training import dataset
 from sentence_transformers import SentenceTransformer
-
+import matplotlib.pyplot as plt
 #----------------------------------------------------------------------------
 
 def error(msg):
@@ -747,12 +747,19 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
     if channels not in [1, 3]:
         error('Input images must be stored as RGB or grayscale')
 
+
+    print('sample image with text')
+    print(texts[0])
+    print(embeddings[0])
+    plt.imshow(img)
+    plt.show()
+
     with TFRecordExporter(tfrecord_dir, len(images)) as tfr:
         order = tfr.choose_shuffled_order() if shuffle else np.arange(len(images))
         for idx in log_progress(range(order.size)):
             img = np.asarray(PIL.Image.open(images[idx]))
             if channels == 1:
-                print("Greyscale, adding dimension:", images[order[idx]], img.shape)
+                print("Greyscale, adding dimension:", images[idx], img.shape)
                 img = img[np.newaxis, :, :] # HW => CHW
             else:
                 img = img.transpose([2, 0, 1]) # HWC => CHW
@@ -760,6 +767,8 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
 
         if not ignore_labels:
             tfr.add_labels(embeddings)
+    
+    
 def _get_all_files(path):
     if os.path.isfile(path):
         return [path]
