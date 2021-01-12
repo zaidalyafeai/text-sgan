@@ -18,6 +18,7 @@ import pickle
 from utils import log_progress, imshow, create_image_grid, show_animation
 import imageio
 import glob
+from sentence_transformers import SentenceTransformer
 
 class SGAN:
 
