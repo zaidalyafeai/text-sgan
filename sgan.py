@@ -26,6 +26,9 @@ class SGAN:
         self.pkl_path = pkl_path
         self.dim = dim
 
+        print('Create embeddings')
+        self.encoder = SentenceTransformer('paraphrase-distilroberta-base-v1')
+    
         if self.pkl_path is None and from_dir is None:
             ffhq_pkl = 'stylegan2-ffhq-config-f.pkl'
             ffhq_url = f'http://d36zk2xti64re0.cloudfront.net/stylegan2/networks/{ffhq_pkl}'
@@ -93,6 +96,24 @@ class SGAN:
             noise_rnd = np.random.RandomState(1) # fix noise
             tflib.set_vars({var: noise_rnd.randn(*var.shape.as_list()) for var in self.noise_vars}) # [height, width]
             images = self.Gs.run(z, label, **Gs_kwargs) # [minibatch, height, width, channel]
+            imgs.append(PIL.Image.fromarray(images[0], 'RGB'))
+        return imgs
+    
+    def generate_images_from_text(self, zs, truncation_psi, text = None):
+        Gs_kwargs = dnnlib.EasyDict()
+        Gs_kwargs.output_transform = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
+        Gs_kwargs.randomize_noise = False
+        if not isinstance(truncation_psi, list):
+            truncation_psi = [truncation_psi] * len(zs)
+            
+        imgs = []
+        text = self.encoder.encode([text])
+        
+        for z_idx, z in log_progress(enumerate(zs), size = len(zs), name = "Generating images"):
+            Gs_kwargs.truncation_psi = truncation_psi[z_idx]
+            noise_rnd = np.random.RandomState(1) # fix noise
+            tflib.set_vars({var: noise_rnd.randn(*var.shape.as_list()) for var in self.noise_vars}) # [height, width]
+            images = self.Gs.run(z, text, **Gs_kwargs) # [minibatch, height, width, channel]
             imgs.append(PIL.Image.fromarray(images[0], 'RGB'))
         return imgs
     
