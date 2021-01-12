@@ -27,7 +27,7 @@ class SGAN:
         self.pkl_path = pkl_path
         self.dim = dim
 
-        print('Create embeddings')
+        print('Download Embedding models')
         self.encoder = SentenceTransformer('paraphrase-distilroberta-base-v1')
     
         if self.pkl_path is None and from_dir is None:

@@ -721,7 +721,7 @@ def create_from_images(tfrecord_dir, image_dir, shuffle):
 
 #----------------------------------------------------------------------------
 
-def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels):
+def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, encoder):
 
     images = []
     texts = []
@@ -735,11 +735,9 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
         texts.append(cpt_text) 
 
     print('Create embeddings')
-    model = SentenceTransformer('paraphrase-distilroberta-base-v1')
-    embeddings = model.encode(texts)
+    embeddings = encoder.encode(texts)
 
     img = np.asarray(PIL.Image.open(images[0]))
-    shape = img.shape
     resolution = img.shape[0]
     channels = img.shape[2] if img.ndim == 3 else 1
     if img.shape[1] != resolution:
@@ -752,14 +750,14 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
     with TFRecordExporter(tfrecord_dir, len(images)) as tfr:
         order = tfr.choose_shuffled_order() if shuffle else np.arange(len(images))
         for idx in log_progress(range(order.size)):
-            img = np.asarray(PIL.Image.open(images[order[idx]]))
+            img = np.asarray(PIL.Image.open(images[idx]))
             if channels == 1:
                 print("Greyscale, adding dimension:", images[order[idx]], img.shape)
                 img = img[np.newaxis, :, :] # HW => CHW
             else:
                 img = img.transpose([2, 0, 1]) # HWC => CHW
             tfr.add_image(img)
-            
+
         if not ignore_labels:
             tfr.add_labels(embeddings)
 def _get_all_files(path):
