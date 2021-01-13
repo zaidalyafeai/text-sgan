@@ -779,6 +779,7 @@ def D_stylegan2(
     mbstd_num_features  = 1,            # Number of features for the minibatch standard deviation layer.
     dtype               = 'float32',    # Data type to use for activations and outputs.
     resample_kernel     = [1,3,3,1],    # Low-pass filter to apply when resampling activations. None = no filtering.
+    latent_size         = 512,
     **_kwargs):                         # Ignore unrecognized keyword args.
     saved_args = locals()
     print("saved_args is", saved_args)
@@ -876,6 +877,13 @@ def D_stylegan2(
             x = apply_bias_act(conv2d_layer(x, fmaps=nf(1), kernel=3), act=act)
         with tf.variable_scope('Dense0'):
             x = apply_bias_act(dense_layer(x, fmaps=nf(0)), act=act)
+    
+    if label_size:
+        with tf.variable_scope('LabelConcat'):
+            w = tf.get_variable('weight', shape=[label_size, latent_size], initializer=tf.initializers.random_normal())
+            y = tf.matmul(labels_in, tf.cast(w, dtype))
+            x = tf.concat([x, y], axis=1)
+            
     # Output layer without label conditioning from "Which Training Methods for GANs do actually Converge?"
     with tf.variable_scope('Output'):
         # x = apply_bias_act(dense_layer(x, fmaps=max(labels_in.shape[1], 1)))
