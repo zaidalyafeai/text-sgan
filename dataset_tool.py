@@ -26,7 +26,7 @@ import datetime
 from tqdm import tqdm
 from utils import log_progress
 from training import dataset
-    from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer
 import matplotlib.pyplot as plt
 #----------------------------------------------------------------------------
 
