@@ -782,7 +782,7 @@ def D_stylegan2(
     latent_size         = 512,
     **_kwargs):                         # Ignore unrecognized keyword args.
     saved_args = locals()
-    print("saved_args is", saved_args)
+    # print("saved_args is", saved_args)
     res_log2 = int(np.log2(resolution)) - 2
     #assert resolution == 2**resolution_log2 and resolution >= 4
     assert min_h > 2 and min_w >2 and res_log2>=1

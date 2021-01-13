@@ -33,7 +33,7 @@ def create_initial_pkl(
         Gs = G.clone('Gs')
 
     # Print layers and generate initial image snapshot.
-    G.print_layers(); D.print_layers()
+    # G.print_layers(); D.print_layers()
     pkl = 'network-initial-%s-%sx%s-%s.pkl' % (config_id, resolution_w, resolution_h, label_size)
     misc.save_pkl((G, D, Gs), pkl)
     print("Saving",pkl)
