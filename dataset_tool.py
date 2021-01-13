@@ -748,11 +748,11 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
         error('Input images must be stored as RGB or grayscale')
 
 
-    print('sample image with text')
-    print(texts[0])
-    print(embeddings[0])
-    plt.imshow(img)
-    plt.show()
+    # print('sample image with text')
+    # print(texts[0])
+    # print(embeddings[0])
+    # plt.imshow(img)
+    # plt.show()
 
     with TFRecordExporter(tfrecord_dir, len(images)) as tfr:
         order = tfr.choose_shuffled_order() if shuffle else np.arange(len(images))
