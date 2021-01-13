@@ -133,8 +133,8 @@ def training_loop(
             # D.copy_vars_from(rD)
             # Gs.copy_vars_from(rGs)
 
-    G.print_layers()
-    D.print_layers()
+    # G.print_layers()
+    # D.print_layers()
 
     start_time = time.time()
     grid_size, grid_reals, grid_labels = setup_snapshot_image_grid(training_set)

@@ -155,8 +155,12 @@ class SGAN:
     def generate_images_from_seeds(self, seeds, truncation_psi, text = None):
         return imshow(self.generate_images_from_text(self.generate_zs_from_seeds(seeds), truncation_psi, text = text)[0])
 
+    def print_G(self):
+        self._G.print_layers()
 
-    
+    def print_D(self):
+        self._D.print_layers()
+
     def generate_randomly(self, truncation_psi = 0.5, text = None):
         return self.generate_images_from_seeds(np.random.randint(4294967295, size=1), 
         truncation_psi=truncation_psi, text = text)
