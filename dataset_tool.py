@@ -28,6 +28,8 @@ from utils import log_progress
 from training import dataset
 from sentence_transformers import SentenceTransformer
 import matplotlib.pyplot as plt
+import h5py
+
 #----------------------------------------------------------------------------
 
 def error(msg):
@@ -768,7 +770,47 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
         if not ignore_labels:
             tfr.add_labels(embeddings)
     
-    
+def create_image_and_textv3(tfrecord_dir, image_file, hd5_dir, shuffle, ignore_labels, encoder):
+
+    images = []
+    texts = []
+    print('Loading images from "%s"' % image_file)
+    images = open(image_file, 'r').split().readlines()
+
+    embeddings = np.zeros((len(images), 4800))
+    with h5py.File(hd5_dir, "r") as f:
+        # List all groups
+        a_group_key = list(f.keys())[0]
+
+        # Get the data
+        data = list(f[a_group_key])
+        for idx, vec in enumerate(data):
+            embeddings[idx] = vec
+
+    img = np.asarray(PIL.Image.open(images[0]))
+    resolution = img.shape[0]
+    channels = img.shape[2] if img.ndim == 3 else 1
+    if img.shape[1] != resolution:
+        error('Input images must have the same width and height')
+    if resolution != 2 ** int(np.floor(np.log2(resolution))):
+        error('Input image resolution must be a power-of-two')
+    if channels not in [1, 3]:
+        error('Input images must be stored as RGB or grayscale')
+
+    with TFRecordExporter(tfrecord_dir, len(images)) as tfr:
+        order = tfr.choose_shuffled_order() if shuffle else np.arange(len(images))
+        for idx in log_progress(range(order.size)):
+            img = np.asarray(PIL.Image.open(images[idx]))
+            if channels == 1:
+                print("Greyscale, adding dimension:", images[idx], img.shape)
+                img = img[np.newaxis, :, :] # HW => CHW
+            else:
+                img = img.transpose([2, 0, 1]) # HWC => CHW
+            tfr.add_image(img)
+
+        if not ignore_labels:
+            tfr.add_labels(embeddings)
+
 def _get_all_files(path):
     if os.path.isfile(path):
         return [path]
