@@ -17,6 +17,7 @@ import os
 from IPython.display import HTML
 from base64 import b64encode
 import imageio
+import h5py
 
 def show_animation(movie_name):
   mp4 = open(movie_name,'rb').read()

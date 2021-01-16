@@ -19,11 +19,12 @@ from utils import log_progress, imshow, create_image_grid, show_animation
 import imageio
 import glob
 from sentence_transformers import SentenceTransformer
+import h5py
 
 class SGAN:
 
     def __init__(self, pkl_path = None, from_scratch= False, dim = (512, 512),
-                from_dir = None, cond = False, label_size = 768):
+                from_dir = None, cond = False, label_size = 768, use_hp5 = True):
         self.pkl_path = pkl_path
         self.dim = dim
 
@@ -57,7 +58,9 @@ class SGAN:
         with dnnlib.util.open_url(self.pkl_path) as fp:
             self._G, self._D, self.Gs = pickle.load(fp)
         self.noise_vars = [var for name, var in self.Gs.components.synthesis.vars.items() if name.startswith('noise')]
-    
+
+        self.use_hp5 = use_hp5
+        self.hd5_dir = 'sample_caption_vectors.hdf5'
     def train(self, data_path = None, out_dir = None, mirror = True):
         assert data_path
         assert out_dir
@@ -108,7 +111,16 @@ class SGAN:
             truncation_psi = [truncation_psi] * len(zs)
             
         imgs = []
-        text = self.encoder.encode([text])
+        if self.use_hp5:
+            with h5py.File(self.hd5_dir, "r") as f:
+                # List all groups
+                a_group_key = list(f.keys())[0]
+
+                # Get the data
+                data = list(f[a_group_key])
+                text = data[0].reshape((1, 4800))
+        else:
+            text = self.encoder.encode([text])
         
         for z_idx, z in log_progress(enumerate(zs), size = len(zs), name = "Generating images"):
             Gs_kwargs.truncation_psi = truncation_psi[z_idx]
