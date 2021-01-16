@@ -83,7 +83,8 @@ def resize(path, dim = (512, 512)):
   return out_path
 
 def resizev3(path, dim = (512, 512)):
-  dirs = os.listdir(path)
+#   dirs = os.listdir(path)
+  dirs = [f'{idx}.jpg' for idx in range(511)]
   out_path = f'{path}/{dim[0]}x{dim[1]}'
   os.makedirs(out_path, exist_ok=True)
   image_files = []
