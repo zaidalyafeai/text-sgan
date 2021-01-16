@@ -86,17 +86,18 @@ def resizev3(path, dim = (512, 512)):
   dirs = os.listdir(path)
   out_path = f'{path}/{dim[0]}x{dim[1]}'
   os.makedirs(out_path, exist_ok=True)
-  files = []
+  image_files = []
+  
   for item in log_progress(dirs):
     img_path = f'{path}/{item}'
     if os.path.isfile(img_path) and img_path.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')):
         im = Image.open(img_path)
         imResize = im.resize(dim, Image.ANTIALIAS).convert('RGB')
         imResize.save(f'{out_path}/{item}', 'JPEG', quality=90)
-        files.append(f'{out_path}/{item}')
+        image_files.append(f'{out_path}/{item}')
   file_path = 'image_files_resized.txt'
-  with open(file_path, 'w'):
-      files.write(('\n'.join()))
+  with open(file_path, 'w') as f:
+      f.write(('\n').join(image_files))
   return file_path
 
 def resize_dirs(path, out_dir, dim = (512, 512)):

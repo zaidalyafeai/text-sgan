@@ -773,7 +773,6 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
 def create_image_and_textv3(tfrecord_dir, image_file, hd5_dir, shuffle, ignore_labels, encoder):
 
     images = []
-    texts = []
     print('Loading images from "%s"' % image_file)
     images = open(image_file, 'r').split().readlines()
 
