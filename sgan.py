@@ -118,7 +118,8 @@ class SGAN:
 
                 # Get the data
                 data = list(f[a_group_key])
-                text = data[0].reshape((1, 4800))
+                print(len(data))
+                text = data[self.idx].reshape((1, 4800))
         else:
             text = self.encoder.encode([text])
         
@@ -173,7 +174,8 @@ class SGAN:
     def print_D(self):
         self._D.print_layers()
 
-    def generate_randomly(self, truncation_psi = 0.5, text = None):
+    def generate_randomly(self, truncation_psi = 0.5, text = None, idx = 0):
+        self.idx = idx
         return self.generate_images_from_seeds(np.random.randint(4294967295, size=1), 
         truncation_psi=truncation_psi, text = text)
 
