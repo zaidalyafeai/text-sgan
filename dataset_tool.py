@@ -774,8 +774,8 @@ def create_image_and_textv3(tfrecord_dir, image_file, hd5_dir, shuffle, ignore_l
 
     images = []
     print('Loading images from "%s"' % image_file)
-    images = open(image_file, 'r').split().readlines()
-
+    images = open(image_file, 'r').read().splitlines()
+    print(images)
     embeddings = np.zeros((len(images), 4800))
     with h5py.File(hd5_dir, "r") as f:
         # List all groups
