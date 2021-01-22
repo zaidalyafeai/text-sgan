@@ -1,6 +1,7 @@
 from utils import resize, resize_dirs, resizev3
 from dataset_tool import create_from_images, create_from_image_folders,create_image_and_textv2
 from sentence_transformers import SentenceTransformer
+import gensim 
 
 class Dataset:
     def __init__(self, path, dim = (512, 512), use_doc2vec = True):
