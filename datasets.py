@@ -19,7 +19,7 @@ class Dataset:
             out_path = resize_dirs(self.path, 'dataset/resized', dim = self.dim)
             create_from_image_folders(tfrecord_dir, out_path, shuffle, ignore_labels)
         elif with_text:
-            image_dir = resizev3(self.path, dim = self.dim)
+            image_dir = resize(self.path, dim = self.dim)
             create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, self.encoder)
         else:
             print('resizing images ...')
