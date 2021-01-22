@@ -20,6 +20,7 @@ import imageio
 import glob
 from sentence_transformers import SentenceTransformer
 import h5py
+import gensim
 
 class SGAN:
 
