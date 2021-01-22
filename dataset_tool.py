@@ -30,8 +30,8 @@ from sentence_transformers import SentenceTransformer
 import matplotlib.pyplot as plt
 import h5py
 import gensim
-from IPython.display import Image, display
-
+from IPython.display import Image
+from IPython.display import display_ipython
 def error(msg):
     print('Error: ' + msg)
     exit(1)
@@ -742,11 +742,11 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
 
         import random 
         idx = random.randint(0, len(texts))
-        sims = model.docvecs.most_similar([embeddings[idx]], topn=10)
+        sims = encoder.docvecs.most_similar([embeddings[idx]], topn=10)
         print(sims[0][1])
         display(Image(images[idx]))
         print('most similar to ', sims[0][0])                                
-        display(Image(f'{image_dir}/{sims[0][0]}.jpg'))                     
+        display_ipython(Image(f'{image_dir}/{sims[0][0]}.jpg'))                     
     else: 
         embeddings = encoder.encode(texts)
     
