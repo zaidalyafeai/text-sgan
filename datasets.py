@@ -3,10 +3,13 @@ from dataset_tool import create_from_images, create_from_image_folders,create_im
 from sentence_transformers import SentenceTransformer
 
 class Dataset:
-    def __init__(self, path, dim = (512, 512)):
+    def __init__(self, path, dim = (512, 512), use_doc2vec = True):
         self.path = path 
         self.dim = dim
-        self.encoder = SentenceTransformer('paraphrase-distilroberta-base-v1')
+        if use_doc2vec:
+            self.encoder = gensim.models.doc2vec.Doc2Vec.load('model.doc2vec')
+        else:
+            self.encoder = SentenceTransformer('paraphrase-distilroberta-base-v1')
  
     
     def prepare(self, tfrecord_dir, hd5_dir, shuffle = False,
