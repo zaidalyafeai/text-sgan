@@ -31,7 +31,7 @@ import matplotlib.pyplot as plt
 import h5py
 import gensim
 from IPython.display import Image
-from IPython.display import display_ipython
+from IPython.display import display as display_ipython
 def error(msg):
     print('Error: ' + msg)
     exit(1)
