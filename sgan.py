@@ -57,12 +57,14 @@ class SGAN:
 
         dnnlib.tflib.init_tf()
         print('Loading networks from "%s"...' % self.pkl_path)
+        
         with dnnlib.util.open_url(self.pkl_path) as fp:
             self._G, self._D, self.Gs = pickle.load(fp)
         self.noise_vars = [var for name, var in self.Gs.components.synthesis.vars.items() if name.startswith('noise')]
 
         self.use_hp5 = use_hp5
         self.hd5_dir = 'sample_caption_vectors.hdf5'
+        self.use_doc2vec = use_doc2vec
         if use_doc2vec:
             self.encoder = gensim.models.doc2vec.Doc2Vec.load('model.doc2vec')
 
@@ -126,7 +128,7 @@ class SGAN:
                 print(len(data))
                 text = data[self.idx].reshape((1, 4800))
         elif self.use_doc2vec:
-            text = self.encoder.infer_vector(text.split())
+            text = np.array([self.encoder.infer_vector(text.split())])
         else:
             text = self.encoder.encode([text])
         
