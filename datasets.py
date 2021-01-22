@@ -13,14 +13,14 @@ class Dataset:
             self.encoder = SentenceTransformer('paraphrase-distilroberta-base-v1')
  
     
-    def prepare(self, tfrecord_dir, hd5_dir, shuffle = False,
+    def prepare(self, tfrecord_dir, shuffle = False,
                 with_sub_dirs = False, ignore_labels = 1, with_text = True):
         if with_sub_dirs:
             out_path = resize_dirs(self.path, 'dataset/resized', dim = self.dim)
             create_from_image_folders(tfrecord_dir, out_path, shuffle, ignore_labels)
         elif with_text:
-            image_file = resizev3(self.path, dim = self.dim)
-            create_image_and_textv2(tfrecord_dir, image_file, hd5_dir, shuffle, ignore_labels, self.encoder)
+            image_dir = resizev3(self.path, dim = self.dim)
+            create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, self.encoder)
         else:
             print('resizing images ...')
             out_path = resize(self.path, dim = self.dim)
