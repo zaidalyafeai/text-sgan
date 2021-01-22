@@ -739,14 +739,14 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
 
     if use_doc2vec:
         embeddings = np.array([encoder.infer_vector(text.split()) for text in texts])
-        
-    import random 
-    idx = random.randint(0, len(texts))
-    sims = model.docvecs.most_similar([embeddings[idx]], topn=10)
-    print(sims[0][1])
-    display(Image(images[idx]))
-    print('most similar to ', sims[0][0])                                
-    display(Image(f'{image_dir}/{sims[0][0]}.jpg'))                     
+
+        import random 
+        idx = random.randint(0, len(texts))
+        sims = model.docvecs.most_similar([embeddings[idx]], topn=10)
+        print(sims[0][1])
+        display(Image(images[idx]))
+        print('most similar to ', sims[0][0])                                
+        display(Image(f'{image_dir}/{sims[0][0]}.jpg'))                     
     else: 
         embeddings = encoder.encode(texts)
     
