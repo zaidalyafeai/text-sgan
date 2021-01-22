@@ -739,10 +739,10 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
     print('Create embeddings')
 
     if use_doc2vec:
-        embeddings = np.array(encoder.infer_vector([text.split() for text in texts]))
+        embeddings = np.array([encoder.infer_vector(text.split()) for text in texts])
     else: 
         embeddings = encoder.encode(texts)
-
+    print(embeddings.shape)
     img = np.asarray(PIL.Image.open(images[0]))
     resolution = img.shape[0]
     channels = img.shape[2] if img.ndim == 3 else 1
