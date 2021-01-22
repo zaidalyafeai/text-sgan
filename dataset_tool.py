@@ -724,7 +724,7 @@ def create_from_images(tfrecord_dir, image_dir, shuffle):
 
 #----------------------------------------------------------------------------
 
-def create_image_and_textv2(tfrecord_dir, image_dir, text_dir shuffle, ignore_labels, encoder, use_doc2vec = True):
+def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, encoder, use_doc2vec = True):
 
     images = []
     texts = []
