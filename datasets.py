@@ -13,7 +13,7 @@ class Dataset:
             self.encoder = SentenceTransformer('paraphrase-distilroberta-base-v1')
  
     
-    def prepare(self, tfrecord_dir, shuffle = False,
+    def prepare(self, tfrecord_dir, text_dir, shuffle = False,
                 with_sub_dirs = False, ignore_labels = 1, with_text = True):
         if with_sub_dirs:
             out_path = resize_dirs(self.path, 'dataset/resized', dim = self.dim)
