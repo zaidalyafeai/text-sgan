@@ -744,10 +744,10 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
         import random 
         idx = random.randint(0, len(texts))
         sims = encoder.docvecs.most_similar([embeddings[idx]], topn=10)
-        print(sims[0][1])
+        print(texts[idx],sims[0][1])
         display_ipython(Image(images[idx]))
         print('most similar to ', sims[0][0])                                
-        display_ipython(Image(f'{image_dir}/{sims[0][0]}.jpg'))                     
+        display_ipython(Image(f'../jpg/{sims[0][0]}.jpg'))                     
     else: 
         embeddings = encoder.encode(texts)
     
