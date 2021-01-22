@@ -1,5 +1,5 @@
 from utils import resize, resize_dirs, resizev3
-from dataset_tool import create_from_images, create_from_image_folders,create_image_and_textv3
+from dataset_tool import create_from_images, create_from_image_folders,create_image_and_textv2
 from sentence_transformers import SentenceTransformer
 
 class Dataset:
@@ -16,7 +16,7 @@ class Dataset:
             create_from_image_folders(tfrecord_dir, out_path, shuffle, ignore_labels)
         elif with_text:
             image_file = resizev3(self.path, dim = self.dim)
-            create_image_and_textv3(tfrecord_dir, image_file, hd5_dir, shuffle, ignore_labels, self.encoder)
+            create_image_and_textv2(tfrecord_dir, image_file, hd5_dir, shuffle, ignore_labels, self.encoder)
         else:
             print('resizing images ...')
             out_path = resize(self.path, dim = self.dim)

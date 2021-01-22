@@ -24,12 +24,13 @@ import h5py
 class SGAN:
 
     def __init__(self, pkl_path = None, from_scratch= False, dim = (512, 512),
-                from_dir = None, cond = False, label_size = 768, use_hp5 = True):
+                from_dir = None, cond = False, label_size = 768, use_hp5 = False, use_doc2vec = True):
         self.pkl_path = pkl_path
         self.dim = dim
 
-        print('Download Embedding models')
-        self.encoder = SentenceTransformer('paraphrase-distilroberta-base-v1')
+        if False:
+            print('Download Embedding models')
+            self.encoder = SentenceTransformer('paraphrase-distilroberta-base-v1')
     
         if self.pkl_path is None and from_dir is None:
             ffhq_pkl = 'stylegan2-ffhq-config-f.pkl'
@@ -61,6 +62,9 @@ class SGAN:
 
         self.use_hp5 = use_hp5
         self.hd5_dir = 'sample_caption_vectors.hdf5'
+        if use_doc2vec:
+            self.encoder = gensim.models.doc2vec.Doc2Vec.load('model.doc2vec')
+
     def train(self, data_path = None, out_dir = None, mirror = True):
         assert data_path
         assert out_dir
@@ -120,6 +124,8 @@ class SGAN:
                 data = list(f[a_group_key])
                 print(len(data))
                 text = data[self.idx].reshape((1, 4800))
+        elif self.use_doc2vec:
+            text = self.encoder.infer_vector(text.split())
         else:
             text = self.encoder.encode([text])
         

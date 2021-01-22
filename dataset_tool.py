@@ -723,7 +723,7 @@ def create_from_images(tfrecord_dir, image_dir, shuffle):
 
 #----------------------------------------------------------------------------
 
-def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, encoder):
+def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, encoder, use_doc2vec = True):
 
     images = []
     texts = []
@@ -735,9 +735,12 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
 
         images.append(img_path)
         texts.append(cpt_text) 
-
     print('Create embeddings')
-    embeddings = encoder.encode(texts)
+
+    if use_doc2vec:
+        embeddings = np.array(encoder.infer_vector([text.split() for text in texts]))
+    else: 
+        embeddings = encoder.encode(texts)
 
     img = np.asarray(PIL.Image.open(images[0]))
     resolution = img.shape[0]
