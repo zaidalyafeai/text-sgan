@@ -24,7 +24,7 @@ import gensim
 
 class SGAN:
 
-    def __init__(self, pkl_path = None, from_scratch= False, dim = (512, 512),
+    def __init__(self, pkl_path = None, init_pkl = 'stylegan2-ffhq-config-f.pkl', from_scratch= False, dim = (512, 512),
                 from_dir = None, cond = False, label_size = 768, use_hp5 = False, use_doc2vec = True):
         self.pkl_path = pkl_path
         self.dim = dim
@@ -34,18 +34,18 @@ class SGAN:
             self.encoder = SentenceTransformer('paraphrase-distilroberta-base-v1')
     
         if self.pkl_path is None and from_dir is None:
-            ffhq_pkl = 'stylegan2-ffhq-config-f.pkl'
-            ffhq_url = f'http://d36zk2xti64re0.cloudfront.net/stylegan2/networks/{ffhq_pkl}'
-
             empty_pkl = create_model(height=dim[0], width=dim[1], cond = cond, label_size = label_size)
         
             if from_scratch:
                 self.pkl_path = empty_pkl
             else:
-                if not os.path.exists(ffhq_pkl):
-                    download_url(ffhq_url, ffhq_pkl)
+                if init_pkl == 'stylegan2-ffhq-config-f.pkl':
+                    ffhq_url = f'http://d36zk2xti64re0.cloudfront.net/stylegan2/networks/{init_pkl}'
+
+                    if not os.path.exists(init_pkl):
+                        download_url(ffhq_url, init_pkl)
                 self.pkl_path = 'surgery.pkl'
-                copy_weights(ffhq_pkl, empty_pkl, self.pkl_path)
+                copy_weights(init_pkl, empty_pkl, self.pkl_path)
 
         if from_dir:
             curr_best = 0
