@@ -723,7 +723,7 @@ def create_from_images(tfrecord_dir, image_dir, shuffle):
 
 #----------------------------------------------------------------------------
 
-def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, encoder, use_doc2vec = True):
+def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, encoder, model_type = 'bert'):
 
     images = []
     texts = []
@@ -737,7 +737,7 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
         texts.append(cpt_text) 
     print('Create embeddings')
 
-    if use_doc2vec:
+    if model_type == 'doc2vec':
         embeddings = np.array([encoder.infer_vector(text.split()) for text in texts])
         print(embeddings.shape)
         print(len(texts))
@@ -748,7 +748,7 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
         display_ipython(Image(images[idx]))
         print('most similar to ', sims[0][0])                                
         display_ipython(Image(f'../jpg/{sims[0][0]}.jpg'))                     
-    else: 
+    elif model_type == 'bert': 
         embeddings = encoder.encode(texts)
     
     

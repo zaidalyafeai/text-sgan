@@ -25,11 +25,12 @@ import gensim
 class SGAN:
 
     def __init__(self, pkl_path = None, init_pkl = 'stylegan2-ffhq-config-f.pkl', from_scratch= False, dim = (512, 512),
-                from_dir = None, cond = False, label_size = 768, use_hp5 = False, use_doc2vec = True):
+                from_dir = None, cond = False, label_size = 768, use_hp5 = False, model_type = 'bert'):
         self.pkl_path = pkl_path
         self.dim = dim
+        self.model_type = model_type
 
-        if False:
+        if model_type == 'bert':
             print('Download Embedding models')
             self.encoder = SentenceTransformer('paraphrase-distilroberta-base-v1')
     
@@ -64,8 +65,7 @@ class SGAN:
 
         self.use_hp5 = use_hp5
         self.hd5_dir = 'sample_caption_vectors.hdf5'
-        self.use_doc2vec = use_doc2vec
-        if use_doc2vec:
+        if model_type == 'doc2vec':
             self.encoder = gensim.models.doc2vec.Doc2Vec.load('model.doc2vec')
 
     def train(self, data_path = None, out_dir = None, mirror = True):
@@ -127,7 +127,7 @@ class SGAN:
                 data = list(f[a_group_key])
                 print(len(data))
                 text = data[self.idx].reshape((1, 4800))
-        elif self.use_doc2vec:
+        elif self.model_type == 'bert':
             text = np.array([self.encoder.infer_vector(text.split())])
         else:
             text = self.encoder.encode([text])
