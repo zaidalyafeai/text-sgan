@@ -186,11 +186,13 @@ def log_progress(sequence, every=1, size=None, name='Items'):
         )
 
 
-def read_corpus(dir, tokens_only=False):
+def read_corpus(dir, tokens_only=False, use_chars = True):
 
     for i, fname in enumerate(glob.glob(f'{dir}/*.txt')):
         with smart_open.open(fname) as f:
-            for line in f: 
+            for line in f:
+                if use_chars:
+                    line = line.replace(''," ")
                 tokens = gensim.utils.simple_preprocess(line)
                 if tokens_only:
                     yield tokens
@@ -198,9 +200,8 @@ def read_corpus(dir, tokens_only=False):
                     # For training data, add tags
                     yield gensim.models.doc2vec.TaggedDocument(tokens, [i])
 
-def train_embeddings(dir, epochs = 100, vdim = 128,  out_path = 'model.doc2vec'):
-    train_corpus = list(read_corpus(dir))
-    print(train_corpus)
+def train_embeddings(dir, epochs = 100, vdim = 128,  out_path = 'model.doc2vec',use_chars = True):
+    train_corpus = list(read_corpus(dir, use_chars= use_chars))
     model = gensim.models.doc2vec.Doc2Vec(vector_size=vdim, min_count=2, epochs=epochs)
     model.build_vocab(train_corpus)
     model.train(train_corpus, total_examples=model.corpus_count, epochs=model.epochs)

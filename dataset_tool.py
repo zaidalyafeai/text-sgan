@@ -723,7 +723,7 @@ def create_from_images(tfrecord_dir, image_dir, shuffle):
 
 #----------------------------------------------------------------------------
 
-def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, encoder, model_type = 'bert'):
+def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, encoder, model_type = 'bert', use_chars= True):
 
     images = []
     texts = []
@@ -732,7 +732,8 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
     for img_path in glob.glob(f'{image_dir}/**.jpg'): 
         cpt_file = img_path.split('/')[-1][:-4]
         cpt_text = open(f'{text_dir}/{cpt_file}.txt', 'r').read().splitlines()[0]
-
+        if use_chars:
+            cpt_text.replace(''," ")
         images.append(img_path)
         texts.append(cpt_text) 
     print('Create embeddings')
@@ -741,13 +742,13 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
         embeddings = np.array([encoder.infer_vector(text.split()) for text in texts])
         print(embeddings.shape)
         print(len(texts))
-        import random 
-        idx = random.randint(0, len(texts))
-        sims = encoder.docvecs.most_similar([embeddings[idx]], topn=10)
-        print(texts[idx],sims[0][1])
-        display_ipython(Image(images[idx]))
-        print('most similar to ', sims[0][0])                                
-        display_ipython(Image(f'../jpg/{sims[0][0]}.jpg'))                     
+        # import random 
+        # idx = random.randint(0, len(texts))
+        # sims = encoder.docvecs.most_similar([embeddings[idx]], topn=10)
+        # print(texts[idx],sims[0][1])
+        # display_ipython(Image(images[idx]))
+        # print('most similar to ', sims[0][0])                                
+        # display_ipython(Image(f'../jpg/{sims[0][0]}.jpg'))                     
     elif model_type == 'bert': 
         embeddings = encoder.encode(texts)
     

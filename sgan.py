@@ -25,10 +25,11 @@ import gensim
 class SGAN:
 
     def __init__(self, pkl_path = None, init_pkl = 'stylegan2-ffhq-config-f.pkl', from_scratch= False, dim = (512, 512),
-                from_dir = None, cond = False, label_size = 768, use_hp5 = False, model_type = 'bert'):
+                from_dir = None, cond = False, label_size = 768, use_hp5 = False, model_type = 'bert', use_chars = True):
         self.pkl_path = pkl_path
         self.dim = dim
         self.model_type = model_type
+        self.use_chars = use_chars
 
         if model_type == 'bert':
             print('Download Embedding models')
@@ -118,6 +119,8 @@ class SGAN:
             truncation_psi = [truncation_psi] * len(zs)
             
         imgs = []
+        if self.use_chars:
+            text = text.replace(''," ")
         if self.use_hp5:
             with h5py.File(self.hd5_dir, "r") as f:
                 # List all groups

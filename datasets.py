@@ -4,10 +4,11 @@ from sentence_transformers import SentenceTransformer
 import gensim 
 
 class Dataset:
-    def __init__(self, path, dim = (512, 512), model_type = 'bert'):
+    def __init__(self, path, dim = (512, 512), model_type = 'bert', use_chars = True):
         self.path = path 
         self.dim = dim
         self.model_type = model_type
+        self.use_chars = use_chars
 
         if model_type == 'bert':
             self.encoder = SentenceTransformer('distilbert-base-nli-stsb-mean-tokens')
@@ -22,7 +23,8 @@ class Dataset:
             create_from_image_folders(tfrecord_dir, out_path, shuffle, ignore_labels)
         elif with_text:
             image_dir = resize(self.path, dim = self.dim)
-            create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, self.encoder, model_type = self.model_type)
+            create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, self.encoder, 
+            model_type = self.model_type, use_chars= self.use_chars)
         else:
             print('resizing images ...')
             out_path = resize(self.path, dim = self.dim)
