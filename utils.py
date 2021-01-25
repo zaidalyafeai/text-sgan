@@ -188,9 +188,9 @@ def log_progress(sequence, every=1, size=None, name='Items'):
 
 def read_corpus(dir, tokens_only=False):
 
-    for fname in glob.glob(f'{dir}/*.txt'):
+    for i, fname in enumerate(glob.glob(f'{dir}/*.txt')):
         with smart_open.open(fname) as f:
-            for i, line in enumerate(f): 
+            for line in f: 
                 tokens = gensim.utils.simple_preprocess(line)
                 if tokens_only:
                     yield tokens
