@@ -193,6 +193,7 @@ def read_corpus(dir, tokens_only=False, use_chars = True):
             for line in f:
                 if use_chars:
                     line = line.replace(''," ")
+                print(line)
                 tokens = gensim.utils.simple_preprocess(line)
                 if tokens_only:
                     yield tokens
