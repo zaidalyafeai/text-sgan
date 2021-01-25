@@ -32,7 +32,7 @@ class SGAN:
 
         if model_type == 'bert':
             print('Download Embedding models')
-            self.encoder = SentenceTransformer('paraphrase-distilroberta-base-v1')
+            self.encoder = SentenceTransformer('distilbert-base-nli-stsb-mean-tokens')
     
         if self.pkl_path is None and from_dir is None:
             empty_pkl = create_model(height=dim[0], width=dim[1], cond = cond, label_size = label_size)
