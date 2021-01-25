@@ -200,6 +200,7 @@ def read_corpus(dir, tokens_only=False):
 
 def train_embeddings(dir, epochs = 100, vdim = 128,  out_path = 'model.doc2vec'):
     train_corpus = list(read_corpus(dir))
+    print(train_corpus)
     model = gensim.models.doc2vec.Doc2Vec(vector_size=vdim, min_count=2, epochs=epochs)
     model.build_vocab(train_corpus)
     model.train(train_corpus, total_examples=model.corpus_count, epochs=model.epochs)
