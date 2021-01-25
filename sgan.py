@@ -128,9 +128,11 @@ class SGAN:
                 print(len(data))
                 text = data[self.idx].reshape((1, 4800))
         elif self.model_type == 'bert':
-            text = np.array([self.encoder.infer_vector(text.split())])
-        else:
             text = self.encoder.encode([text])
+        else:
+            text = np.array([self.encoder.infer_vector(text.split())])
+        
+            
         
         for z_idx, z in log_progress(enumerate(zs), size = len(zs), name = "Generating images"):
             Gs_kwargs.truncation_psi = truncation_psi[z_idx]
