@@ -729,7 +729,9 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
     texts = []
     print('Loading images from "%s"' % image_dir)
     
-    for img_path in glob.glob(f'{image_dir}/**.jpg'): 
+    for img_path in glob.glob(f'{image_dir}/**'): 
+        if not img_path.endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif'):
+            continue
         cpt_file = img_path.split('/')[-1][:-4]
         cpt_text = open(f'{text_dir}/{cpt_file}.txt', 'r').read().splitlines()[0]
         if use_chars:
