@@ -192,9 +192,11 @@ def read_corpus(dir, tokens_only=False, use_chars = True):
         with smart_open.open(fname) as f:
             for line in f:
                 if use_chars:
-                    line = line.replace(''," ")
-                print(line)
-                tokens = gensim.utils.simple_preprocess(line)
+                    tokens = list(tokens)
+                else:
+                    tokens = line.split(' ')
+                # tokens = gensim.utils.simple_preprocess(line)
+
                 if tokens_only:
                     yield tokens
                 else:
