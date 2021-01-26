@@ -195,8 +195,6 @@ def read_corpus(dir, tokens_only=False, use_chars = True):
                     tokens = list(line)
                 else:
                     tokens = line.split(' ')
-                # tokens = gensim.utils.simple_preprocess(line)
-
                 if tokens_only:
                     yield tokens
                 else:
@@ -206,7 +204,7 @@ def read_corpus(dir, tokens_only=False, use_chars = True):
 def train_embeddings(dir, epochs = 100, vdim = 128,  out_path = 'model.doc2vec',use_chars = True):
     train_corpus = list(read_corpus(dir, use_chars= use_chars))
     print(train_corpus)
-    model = gensim.models.doc2vec.Doc2Vec(vector_size=vdim, min_count=1, epochs=epochs)
+    model = gensim.models.doc2vec.Doc2Vec(vector_size=vdim, min_count=0, epochs=epochs)
     model.build_vocab(train_corpus)
     model.train(train_corpus, total_examples=model.corpus_count, epochs=model.epochs)
     model.save(out_path)
