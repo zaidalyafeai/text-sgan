@@ -10,10 +10,12 @@ class Dataset:
         self.model_type = model_type
         self.use_chars = use_chars
 
+        self.encoder = None 
         if model_type == 'bert':
             self.encoder = SentenceTransformer('distilbert-base-nli-stsb-mean-tokens')
         elif model_type == 'doc2vec':
             self.encoder = gensim.models.doc2vec.Doc2Vec.load('model.doc2vec')
+
  
     
     def prepare(self, tfrecord_dir, text_dir, shuffle = False,
