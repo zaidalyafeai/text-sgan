@@ -32,7 +32,7 @@ import h5py
 import gensim
 from IPython.display import Image
 from IPython.display import display as display_ipython
-from utils import onehot
+from utils import onehot, onehottext
 
 def error(msg):
     print('Error: ' + msg)
@@ -734,31 +734,40 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
     for img_path in glob.glob(f'{image_dir}/**'): 
         if not img_path.endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')):
             continue
+        
         cpt_file = img_path.split('/')[-1][:-4]
-        cpt_text = open(f'{text_dir}/{cpt_file}.txt', 'r').read().splitlines()[0]
+        fname = f'{text_dir}/{cpt_file}.txt'
+
+        images.append(img_path)
+
+        if not os.path.exists(fname):
+            continue
+
+        cpt_text = open(fname, 'r').read().splitlines()[0]
         if use_chars:
             cpt_text.replace(''," ")
-        images.append(img_path)
         texts.append(cpt_text) 
     print('Create embeddings')
 
     if model_type == 'doc2vec':
         embeddings = np.array([encoder.infer_vector(text.split()) for text in texts])
         print(embeddings.shape)
-        print(len(texts))
-        # import random 
-        # idx = random.randint(0, len(texts))
-        # sims = encoder.docvecs.most_similar([embeddings[idx]], topn=10)
-        # print(texts[idx],sims[0][1])
-        # display_ipython(Image(images[idx]))
-        # print('most similar to ', sims[0][0])                                
-        # display_ipython(Image(f'../jpg/{sims[0][0]}.jpg'))                     
+        print(len(texts))                   
     elif model_type == 'bert': 
         embeddings = encoder.encode(texts)
     
     elif model_type == 'onehot':
         print(texts)
         embeddings = onehot([i for i in range(len(texts))])
+        print(embeddings)
+    
+    elif model_type == 'onehottext':
+        texts = []
+        for img_path in images:
+            text = img_path.split('/')[-1][:-4]
+            texts.append(text)
+        print(texts)
+        embeddings = onehottext(texts)
         print(embeddings)
     
     

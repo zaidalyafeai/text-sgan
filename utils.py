@@ -217,3 +217,18 @@ def onehot(lbls, dim = 128):
     for i, lbl in enumerate(lbls):
         hotones[i, lbl] = 1
     return hotones 
+
+def onehottext(texts , dim = 300):
+    chars = 'أابتثجحخدذرزسشصضطظعغفقكلمنهويى'
+    embeds = []
+    for text in texts:
+        embed = []
+        for i in range(int(dim / len(chars))):
+            cembed = [0] * len(chars)
+            if i < len(text):
+                char = text[i]
+                lbl = chars.index(char)
+                cembed[lbl] = 1
+            embed = embed + cembed
+        embeds.append(embed)
+    return np.array(embed)

@@ -21,7 +21,7 @@ import glob
 from sentence_transformers import SentenceTransformer
 import h5py
 import gensim
-from utils import onehot
+from utils import onehot, onehottext
 
 class SGAN:
 
@@ -137,7 +137,9 @@ class SGAN:
             text = np.array([self.encoder.infer_vector(text.split())])
         elif self.model_type == 'onehot':
             text = onehot([text])
-        
+
+        elif self.model_type == 'onehottext':
+            text = onehottext([text])
             
         
         for z_idx, z in log_progress(enumerate(zs), size = len(zs), name = "Generating images"):
