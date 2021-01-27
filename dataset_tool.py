@@ -758,7 +758,7 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
     
     elif model_type == 'onehot':
         print(texts)
-        embeddings = onehot([i for i in range(texts)])
+        embeddings = onehot([i for i in range(len(texts))])
     
     
     img = np.asarray(PIL.Image.open(images[0]))
