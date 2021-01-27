@@ -231,4 +231,4 @@ def onehottext(texts , dim = 300):
                 cembed[lbl] = 1
             embed = embed + cembed
         embeds.append(embed)
-    return np.array(embed)
+    return np.array(embeds)
