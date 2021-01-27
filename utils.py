@@ -190,7 +190,7 @@ def read_corpus(dir, tokens_only=False, use_chars = True, duplicate = 1):
 
     for i, fname in enumerate(glob.glob(f'{dir}/*.txt')):
         with smart_open.open(fname) as f:
-            for i in range(duplicate):
+            for j in range(duplicate):
                 for line in f:
                     if use_chars:
                         tokens = list(line)
