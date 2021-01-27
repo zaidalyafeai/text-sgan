@@ -32,6 +32,8 @@ import h5py
 import gensim
 from IPython.display import Image
 from IPython.display import display as display_ipython
+from utils import onehot
+
 def error(msg):
     print('Error: ' + msg)
     exit(1)
@@ -753,6 +755,10 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
         # display_ipython(Image(f'../jpg/{sims[0][0]}.jpg'))                     
     elif model_type == 'bert': 
         embeddings = encoder.encode(texts)
+    
+    elif model_type == 'onehot':
+        print(texts)
+        embeddings = onehot([i for i in range(texts)])
     
     
     img = np.asarray(PIL.Image.open(images[0]))

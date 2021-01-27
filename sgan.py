@@ -21,6 +21,7 @@ import glob
 from sentence_transformers import SentenceTransformer
 import h5py
 import gensim
+from utils import onehot
 
 class SGAN:
 
@@ -132,8 +133,10 @@ class SGAN:
                 text = data[self.idx].reshape((1, 4800))
         elif self.model_type == 'bert':
             text = self.encoder.encode([text])
-        else:
+        elif self.model_type == 'doc2vec':
             text = np.array([self.encoder.infer_vector(text.split())])
+        elif self.model_type == 'onehot':
+            text = onehot([text])
         
             
         

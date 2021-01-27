@@ -211,3 +211,9 @@ def train_embeddings(dir, epochs = 100, vdim = 128,  out_path = 'model.doc2vec',
     model.train(train_corpus, total_examples=model.corpus_count, epochs=model.epochs)
     model.save(out_path)
     return model
+
+def onehot(lbls, dim = 128):
+    hotones = np.zeros((len(text), dim))
+    for i, lbl in enumerate(lbls):
+        hotones[i, lbl] = 1
+    return hotones 
