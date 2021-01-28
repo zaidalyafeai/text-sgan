@@ -219,7 +219,7 @@ def onehot(lbls, dim = 128):
     return hotones 
 
 def onehottext(texts , dim = 300):
-    chars = 'أابتثجحخدذرزسشصضطظعغفقكلمنهويى'
+    chars = 'ٌَِّڤإءئؤةآأابتثجحخدذرزسشصضطظعغفقكلمنهويى_'
     embeds = []
     for text in texts:
         embed = []
