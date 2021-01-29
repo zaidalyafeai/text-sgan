@@ -725,7 +725,8 @@ def create_from_images(tfrecord_dir, image_dir, shuffle):
 
 #----------------------------------------------------------------------------
 
-def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, encoder, model_type = 'bert', use_chars= True):
+def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle,
+     ignore_labels, encoder, embed_dim =430, model_type = 'bert', use_chars= False):
 
     images = []
     texts = []
@@ -766,7 +767,7 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
         for img_path in images:
             text = img_path.split('/')[-1][:-4]
             texts.append(text)
-        embeddings = onehottext(texts)
+        embeddings = onehottext(texts, dim = embed_dim)
 
     
     img = np.asarray(PIL.Image.open(images[0]))

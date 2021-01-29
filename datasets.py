@@ -19,14 +19,15 @@ class Dataset:
  
     
     def prepare(self, tfrecord_dir, text_dir, shuffle = False,
-                with_sub_dirs = False, ignore_labels = 1, with_text = True):
+                with_sub_dirs = False, ignore_labels = 1, with_text = True,
+                embed_dim = 430):
         if with_sub_dirs:
             out_path = resize_dirs(self.path, 'dataset/resized', dim = self.dim)
             create_from_image_folders(tfrecord_dir, out_path, shuffle, ignore_labels)
         elif with_text:
             image_dir = resize(self.path, dim = self.dim)
             create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, self.encoder, 
-            model_type = self.model_type, use_chars= self.use_chars)
+            model_type = self.model_type, use_chars= self.use_chars, embed_dim = embed_dim)
         else:
             print('resizing images ...')
             out_path = resize(self.path, dim = self.dim)
