@@ -766,10 +766,8 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
         for img_path in images:
             text = img_path.split('/')[-1][:-4]
             texts.append(text)
-        print(texts[0])
         embeddings = onehottext(texts)
-        print(embeddings[0])
-    
+
     
     img = np.asarray(PIL.Image.open(images[0]))
     resolution = img.shape[0]
@@ -782,11 +780,11 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
         error('Input images must be stored as RGB or grayscale')
 
 
-    # print('sample image with text')
-    # print(texts[0])
-    # print(embeddings[0])
-    # plt.imshow(img)
-    # plt.show()
+    print('sample image with text')
+    print(texts[0])
+    print(embeddings[0])
+    plt.imshow(img)
+    plt.show()
 
     with TFRecordExporter(tfrecord_dir, len(images)) as tfr:
         order = tfr.choose_shuffled_order() if shuffle else np.arange(len(images))
