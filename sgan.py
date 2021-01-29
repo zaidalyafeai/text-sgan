@@ -26,7 +26,7 @@ from utils import onehot, onehottext
 class SGAN:
 
     def __init__(self, pkl_path = None, init_pkl = 'stylegan2-ffhq-config-f.pkl', from_scratch= False, dim = (512, 512),
-                from_dir = None, cond = False, label_size = 768, use_hp5 = False, model_type = 'bert', use_chars = False):
+                from_dir = None, cond = True, label_size = 768, use_hp5 = False, model_type = 'bert', use_chars = False):
         self.pkl_path = pkl_path
         self.dim = dim
         self.model_type = model_type
