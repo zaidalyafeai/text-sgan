@@ -4,7 +4,7 @@ from sentence_transformers import SentenceTransformer
 import gensim 
 
 class Dataset:
-    def __init__(self, path, dim = (512, 512), model_type = 'bert', use_chars = True):
+    def __init__(self, path, dim = (512, 512), model_type = 'bert', use_chars = False):
         self.path = path 
         self.dim = dim
         self.model_type = model_type
