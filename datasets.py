@@ -19,7 +19,7 @@ class Dataset:
  
     
     def prepare(self, tfrecord_dir, text_dir, shuffle = False,
-                with_sub_dirs = False, ignore_labels = 1, with_text = True,
+                with_sub_dirs = False, ignore_labels = 0, with_text = True,
                 embed_dim = 430):
         if with_sub_dirs:
             out_path = resize_dirs(self.path, 'dataset/resized', dim = self.dim)
