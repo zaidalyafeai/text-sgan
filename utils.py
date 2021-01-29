@@ -218,13 +218,13 @@ def onehot(lbls, dim = 128):
         hotones[i, lbl] = 1
     return hotones 
 
-def onehottext(texts , dim = 420):
+def onehottext(texts , dim = 430):
     chars = 'ٌَِّڤإءئؤةآأابتثجحخدذرزسشصضطظعغفقكلمنهويى_'
     embeds = []
     for text in texts:
         embed = []
         for i in range(int(dim / len(chars))):
-            cembed = [0] * len(chars)
+            cembed = [0] * len(chars) + [2] #add for char segments
             if i < len(text):
                 char = text[i]
                 lbl = chars.index(char)

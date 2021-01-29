@@ -766,9 +766,9 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_l
         for img_path in images:
             text = img_path.split('/')[-1][:-4]
             texts.append(text)
-        print(texts)
+        print(texts[0])
         embeddings = onehottext(texts)
-        print(embeddings)
+        print(embeddings[0])
     
     
     img = np.asarray(PIL.Image.open(images[0]))
