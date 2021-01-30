@@ -138,7 +138,7 @@ class SGAN:
             text = onehot([text])
 
         elif self.model_type == 'onehottext':
-            text = onehottext([text], embed_dim = self.Gs.input_shapes[1][1])
+            text = onehottext([text], dim = self.Gs.input_shapes[1][1])
             
         
         for z_idx, z in log_progress(enumerate(zs), size = len(zs), name = "Generating images"):
