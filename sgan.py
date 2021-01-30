@@ -64,7 +64,7 @@ class SGAN:
         with dnnlib.util.open_url(self.pkl_path) as fp:
             self._G, self._D, self.Gs = pickle.load(fp)
         self.noise_vars = [var for name, var in self.Gs.components.synthesis.vars.items() if name.startswith('noise')]
-        print(self.Gs.input_shape)
+        print(self.Gs.input_shapes[1])
         self.use_hp5 = use_hp5
         self.hd5_dir = 'sample_caption_vectors.hdf5'
         if model_type == 'doc2vec':
