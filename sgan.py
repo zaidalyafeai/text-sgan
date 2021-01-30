@@ -139,6 +139,7 @@ class SGAN:
             text = onehot([text])
 
         elif self.model_type == 'onehottext':
+            print(self.Gs.input_shape[1:])
             text = onehottext([text])
             
         
