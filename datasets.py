@@ -23,7 +23,7 @@ class Dataset:
                 embed_dim = 430):
         if with_sub_dirs:
             out_path = resize_dirs(self.path, 'dataset/resized', dim = self.dim)
-            create_from_image_folders(tfrecord_dir, out_path, shuffle, ignore_labels)
+            create_image_and_textv2(tfrecord_dir, out_path, shuffle, ignore_labels)
         elif with_text:
             image_dir = resize(self.path, dim = self.dim)
             create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, self.encoder, 

@@ -726,28 +726,36 @@ def create_from_images(tfrecord_dir, image_dir, shuffle):
 #----------------------------------------------------------------------------
 
 def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle,
-     ignore_labels, encoder, embed_dim =430, model_type = 'bert', use_chars= False):
+     ignore_labels, encoder, embed_dim =430, model_type = 'bert', use_chars= False,
+     with_sub_dirs = False):
 
     images = []
     texts = []
     print('Loading images from "%s"' % image_dir)
     
-    for img_path in glob.glob(f'{image_dir}/**'): 
-        if not img_path.endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')):
-            continue
-        
-        cpt_file = img_path.split('/')[-1][:-4]
-        fname = f'{text_dir}/{cpt_file}.txt'
+    if with_sub_dirs:
+        for sub_dir in os.listdir(image_dir):
+            for img_path in glob.glob(f'{image_dir}/{sub_dir}/**')
+                if not img_path.endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')):
+                images.append(img_path)
+                texts.append(sub_dir) 
+    else:
+        for img_path in glob.glob(f'{image_dir}/**'): 
+            if not img_path.endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')):
+                continue
+            
+            cpt_file = img_path.split('/')[-1][:-4]
+            fname = f'{text_dir}/{cpt_file}.txt'
 
-        images.append(img_path)
+            images.append(img_path)
 
-        if not os.path.exists(fname):
-            continue
+            if not os.path.exists(fname):
+                continue
 
-        cpt_text = open(fname, 'r').read().splitlines()[0]
-        if use_chars:
-            cpt_text.replace(''," ")
-        texts.append(cpt_text) 
+            cpt_text = open(fname, 'r').read().splitlines()[0]
+            if use_chars:
+                cpt_text.replace(''," ")
+            texts.append(cpt_text) 
     print('Create embeddings')
 
     if model_type == 'doc2vec':
@@ -763,10 +771,11 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle,
         print(embeddings)
     
     elif model_type == 'onehottext':
-        texts = []
-        for img_path in images:
-            text = img_path.split('/')[-1][:-4]
-            texts.append(text)
+        if not with_sub_dirs:
+            texts = []
+            for img_path in images:
+                text = img_path.split('/')[-1][:-4]
+                texts.append(text)
         embeddings = onehottext(texts, dim = embed_dim)
 
     
