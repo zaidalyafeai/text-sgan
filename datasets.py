@@ -24,11 +24,11 @@ class Dataset:
         if with_sub_dirs:
             image_dir = resize_dirs(self.path, 'dataset/resized', dim = self.dim)
             create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, self.encoder, 
-            model_type = self.model_type, use_chars= self.use_chars, embed_dim = embed_dim)    
+            model_type = self.model_type, use_chars= self.use_chars, embed_dim = embed_dim, with_sub_dirs = with_sub_dirs)    
         elif with_text:
             image_dir = resize(self.path, dim = self.dim)
             create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle, ignore_labels, self.encoder, 
-            model_type = self.model_type, use_chars= self.use_chars, embed_dim = embed_dim)
+            model_type = self.model_type, use_chars= self.use_chars, embed_dim = embed_dim, with_sub_dirs = with_sub_dirs)
         else:
             print('resizing images ...')
             out_path = resize(self.path, dim = self.dim)

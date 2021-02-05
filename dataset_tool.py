@@ -732,7 +732,6 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle,
     images = []
     texts = []
     print('Loading images from "%s"' % image_dir)
-    
     if with_sub_dirs:
         for sub_dir in os.listdir(image_dir):
             for img_path in glob.glob(f'{image_dir}/{sub_dir}/**'):
