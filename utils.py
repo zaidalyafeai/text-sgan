@@ -108,7 +108,7 @@ def resize_dirs(path, out_dir, dim = (512, 512)):
   for sub_dir in sub_dirs:
     out_path = f'{out_dir}/{sub_dir}'
     os.makedirs(out_path, exist_ok=True)
-    for item in log_progress(os.listdir(f'{path}/{sub_dir}/')[:10]):
+    for item in log_progress(os.listdir(f'{path}/{sub_dir}/')):
         img_path = f'{path}/{sub_dir}/{item}'
         if os.path.isfile(img_path):
             im = Image.open(img_path)
