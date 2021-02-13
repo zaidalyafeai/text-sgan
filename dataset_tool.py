@@ -767,6 +767,7 @@ def create_image_and_textv2(tfrecord_dir, image_dir, text_dir, shuffle,
     elif model_type == 'onehot':
         print(texts)
         mapper = {text:i for i, text in enumerate(set(texts))}
+        print(mapper)
         embeddings = onehot([mapper[text] for text in texts])
         print(embeddings)
     
